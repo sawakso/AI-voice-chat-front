@@ -1,11 +1,13 @@
 import axios from 'axios'
 
+// 使用 Vite 环境变量
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
+
 const api = axios.create({
-    baseURL: '',          // 空，走 vite proxy
+    baseURL: API_BASE_URL,
     timeout: 180000
 })
 
-// ✅ 发送聊天消息（带上 tts_params）
 export function sendMessage(message, voiceConfig) {
     return api.post('/api/chat', {
         message,
@@ -14,12 +16,13 @@ export function sendMessage(message, voiceConfig) {
         prompt_text: voiceConfig.prompt_text,
         prompt_lang: voiceConfig.prompt_lang || 'zh',
         text_lang: voiceConfig.text_lang || 'zh',
-        tts_params: voiceConfig.tts_params || null   // ✅ 加上这行
+        tts_params: voiceConfig.tts_params || null
     })
 }
 
 export function getAudioUrl(filename) {
-    return `/api/audio/${filename}`
+    const base = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
+    return `${base}/api/audio/${filename}`
 }
 
 export function getModels() {
@@ -33,7 +36,6 @@ export function switchModel(gptModel, sovitsModel) {
     })
 }
 
-// ✅ 测试音色（已有，无需改动，因为传整个 voiceConfig）
 export function testVoice(voiceConfig) {
     return api.post('/api/voice/test', voiceConfig)
 }
