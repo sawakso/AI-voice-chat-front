@@ -11,13 +11,11 @@ import { ref, onMounted, onUnmounted, computed } from 'vue'
 import * as PIXI from 'pixi.js'
 import { Live2DModel } from 'pixi-live2d-display'
 
-// 挂载到 window
 window.PIXI = PIXI
 
 const canvasRef = ref(null)
 let app = null
 let model = null
-let talkingInterval = null
 
 const props = defineProps({
   visible: { type: Boolean, default: true },
@@ -39,31 +37,6 @@ const live2DSettings = ref(loadLive2DSettings())
 
 const actualModelPath = computed(() => {
   return props.modelPath || live2DSettings.value?.modelPath || '/models/hiyori_free_zh/runtime/hiyori_free_t08.model3.json'
-})
-
-defineExpose({
-  startTalking() {
-    if (!model) return
-    if (talkingInterval) clearInterval(talkingInterval)
-    if (model.motion) {
-      try {
-        model.motion('Tap', 0)
-      } catch (e) {}
-    }
-    talkingInterval = setInterval(() => {
-      if (model && model.motion) {
-        try {
-          model.motion('Idle', 0)
-        } catch (e) {}
-      }
-    }, 1500)
-  },
-  stopTalking() {
-    if (talkingInterval) {
-      clearInterval(talkingInterval)
-      talkingInterval = null
-    }
-  }
 })
 
 async function loadModel() {
@@ -88,7 +61,6 @@ async function loadModel() {
       antialias: true
     })
 
-    console.log('加载模型:', actualModelPath.value)
     model = await Live2DModel.from(actualModelPath.value)
 
     const scale = 0.25
@@ -108,7 +80,6 @@ async function loadModel() {
 }
 
 function cleanup() {
-  if (talkingInterval) clearInterval(talkingInterval)
   if (app) {
     app.destroy(true)
     app = null
