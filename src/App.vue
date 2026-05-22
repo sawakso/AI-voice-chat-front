@@ -5,7 +5,8 @@
       <h1>🤖 AI 语音对话</h1>
       <div class="nav-links">
         <router-link to="/">💬 对话</router-link>
-        <router-link to="/settings">⚙️ 设置</router-link>
+        <router-link to="/settings">⚙️ 音色设置</router-link>
+        <router-link to="/live2d">🎨 Live2D 设置</router-link>
       </div>
     </nav>
 
@@ -13,35 +14,60 @@
     <main class="main-content">
       <router-view />
     </main>
+
+
   </div>
 </template>
 
 <script setup>
 import { ref, provide, onMounted } from 'vue'
 
-// ========== 全局音色配置（所有页面共享） ==========
+// ========== 全局音色配置 ==========
 const voiceConfig = ref({
   ref_audio_path: '',
+  aux_ref_audio_paths: [],
   prompt_text: '',
   prompt_lang: 'zh',
-  text_lang: 'zh'
+  text_lang: 'zh',
+  tts_params: {
+    top_k: 15,
+    top_p: 1.0,
+    temperature: 0.1,
+    repetition_penalty: 1.35,
+    speed_factor: 1.0,
+    sample_steps: 32,
+    fragment_interval: 0.3,
+    seed: -1,
+    parallel_infer: true,
+    split_bucket: true,
+    super_sampling: false
+  }
 })
 
-// 提供给所有子组件
 provide('voiceConfig', voiceConfig)
 
-// 从 localStorage 恢复上次的设置
 onMounted(() => {
   const saved = localStorage.getItem('voiceConfig')
   if (saved) {
     try {
-      Object.assign(voiceConfig.value, JSON.parse(saved))
-    } catch (e) {}
+      const parsed = JSON.parse(saved)
+      if (parsed.tts_params) {
+        voiceConfig.value.tts_params = { ...voiceConfig.value.tts_params, ...parsed.tts_params }
+      }
+      voiceConfig.value.ref_audio_path = parsed.ref_audio_path || ''
+      voiceConfig.value.aux_ref_audio_paths = parsed.aux_ref_audio_paths || []
+      voiceConfig.value.prompt_text = parsed.prompt_text || ''
+      voiceConfig.value.prompt_lang = parsed.prompt_lang || 'zh'
+      voiceConfig.value.text_lang = parsed.text_lang || 'zh'
+    } catch (e) {
+      console.error('恢复配置失败', e)
+    }
   }
 })
 </script>
 
 <style>
+/* 样式保持不变 */
 * {
   margin: 0;
   padding: 0;
@@ -61,7 +87,6 @@ body {
   min-height: 100vh;
 }
 
-/* 顶部导航 */
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -97,14 +122,11 @@ body {
   background: #0f3460;
 }
 
-/* 主区域 */
 .main-content {
   flex: 1;
   display: flex;
   flex-direction: column;
-  max-width: 800px;
   width: 100%;
-  margin: 0 auto;
   padding: 20px;
 }
 </style>

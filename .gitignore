@@ -37,3 +37,6 @@ __screenshots__/
 
 # Vite
 *.timestamp-*-*.mjs
+
+CLAUDE.md
+download-live2d-runtime.ps1
