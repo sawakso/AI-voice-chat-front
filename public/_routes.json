@@ -1,0 +1,5 @@
+{
+  "version": 1,
+  "include": ["/*"],
+  "exclude": ["/live2d/*", "/models/*", "/assets/*", "/*.js", "/*.css", "/*.ico"]
+}
