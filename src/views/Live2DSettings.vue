@@ -89,15 +89,15 @@
         </div>
         <div class="preview-live2d" v-else>
           <div class="live2d-preview" ref="previewRef"></div>
-          <div class="preview-controls">
-            <button @click="testBlink">😉 眨眼</button>
-            <button @click="testExpression('happy')">😊 开心</button>
-            <button @click="testExpression('sad')">😢 难过</button>
-            <button @click="testExpression('surprised')">😲 惊讶</button>
-            <button @click="testTalk">🗣️ 测试说话</button>
-            <button @click="debugModel" style="background: #ff6b6b;">🔍 调试模型</button>
-          </div>
         </div>
+      </div>
+      <div class="preview-controls" v-if="settings.enabled && settings.modelPath">
+        <button @click="testBlink">😉 眨眼</button>
+        <button @click="testExpression('happy')">😊 开心</button>
+        <button @click="testExpression('sad')">😢 难过</button>
+        <button @click="testExpression('surprised')">😲 惊讶</button>
+        <button @click="testTalk">🗣️ 测试说话</button>
+        <button @click="debugModel" style="background: #ff6b6b;">🔍 调试模型</button>
       </div>
     </div>
 
@@ -235,12 +235,12 @@ async function loadPreviewModel() {
       autoUpdate: true
     })
     
-    // 设置缩放和位置
-    const scale = Math.min(width / previewModel.width, height / previewModel.height) * settings.value.scale
+    // 设置缩放和位置（留 20% 余量避免裁切，人物下移）
+    const scale = Math.min(width / previewModel.width, height / previewModel.height) * 0.80 * settings.value.scale
     previewModel.scale.set(scale)
     previewModel.anchor.set(0.5, 0.5)
     previewModel.x = width / 2
-    previewModel.y = height / 2
+    previewModel.y = height * 0.55
     
     previewApp.stage.addChild(previewModel)
     
@@ -426,7 +426,8 @@ watch(settings, (newVal) => {
    页面容器
 ═══════════════════════════════ */
 .live2d-settings {
-  max-width: 760px;
+  max-width: 880px;
+  width: 100%;
   margin: 0 auto;
   padding: 4px 0 32px;
 }
@@ -673,11 +674,14 @@ input:checked + .slider:before {
 }
 
 .preview-container {
-  min-height: 260px;
+  width: 60vw;
+  height: 520px;
+  margin: 0 auto;
   background: radial-gradient(ellipse at center, rgba(102, 126, 234, 0.06) 0%, rgba(5, 5, 15, 0.80) 70%);
   border: 1px solid rgba(102, 126, 234, 0.12);
   border-radius: 12px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   overflow: hidden;
@@ -692,12 +696,15 @@ input:checked + .slider:before {
 
 .preview-live2d {
   width: 100%;
-  text-align: center;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .live2d-preview {
-  width: 220px;
-  height: 220px;
+  width: 95%;
+  height: 92%;
   margin: 0 auto;
   background: rgba(102, 126, 234, 0.06);
   border: 1px solid rgba(102, 126, 234, 0.15);
@@ -719,16 +726,19 @@ input:checked + .slider:before {
    预览控制按钮
 ═══════════════════════════════ */
 .preview-controls {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 8px;
-  justify-content: center;
-  margin-top: 16px;
-  flex-wrap: wrap;
-  padding: 0 12px 12px;
+  justify-items: center;
+  margin-top: 12px;
+  width: 100%;
+  max-width: 500px;
+  box-sizing: border-box;
 }
 
 .preview-controls button {
-  padding: 8px 16px;
+  width: 100%;
+  padding: 8px 0;
   background: rgba(102, 126, 234, 0.08);
   border: 1px solid rgba(102, 126, 234, 0.18);
   border-radius: 20px;
@@ -738,6 +748,7 @@ input:checked + .slider:before {
   font-weight: 500;
   cursor: pointer;
   transition: all 0.25s ease;
+  white-space: nowrap;
 }
 .preview-controls button:hover {
   background: rgba(102, 126, 234, 0.20);

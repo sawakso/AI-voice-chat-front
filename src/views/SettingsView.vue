@@ -422,7 +422,8 @@ onMounted(async () => {
 <style scoped>
 /*  页面容器 */
 .settings {
-  max-width: 760px;
+  max-width: 880px;
+  width: 100%;
   margin: 0 auto;
   padding: 4px 0 32px;
 }

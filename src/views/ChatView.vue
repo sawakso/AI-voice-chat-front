@@ -43,7 +43,24 @@
   </div>
     <!-- 右侧 Live2D 区域 -->
     <div class="live2d-sidebar">
-      <div class="live2d-header">🎨 虚拟形象</div>
+      <div class="live2d-header">
+        <span>🎨 虚拟形象</span>
+        <div class="live2d-header-actions">
+          <button class="btn-header-action" @click="zoomOutLive2D" title="缩小">➖</button>
+          <button class="btn-header-action" @click="zoomInLive2D" title="放大">➕</button>
+          <button
+            class="btn-header-action"
+            @click="toggleDragMode"
+            :class="{ active: isDragMode }"
+            :title="isDragMode ? '锁定位置' : '拖拽调整位置'"
+          >{{ isDragMode ? '📍' : '✋' }}</button>
+          <button
+            class="btn-header-action"
+            @click="resetLive2DPosition"
+            title="重置位置"
+          >🔄</button>
+        </div>
+      </div>
       <div class="live2d-container">
         <Live2DView ref="live2dRef" v-if="showLive2D" />
       </div>
@@ -60,6 +77,28 @@ const voiceConfig = inject('voiceConfig')
 const autoRead = inject('autoRead', ref(true))
 const showLive2D = ref(true)  // 控制Live2D显示状态
 const live2dRef = ref(null)  // Live2D组件引用
+const isDragMode = ref(false)  // 拖拽模式
+
+function toggleDragMode() {
+  isDragMode.value = !isDragMode.value
+  if (live2dRef.value) {
+    live2dRef.value.setDragMode(isDragMode.value)
+  }
+}
+
+function resetLive2DPosition() {
+  if (live2dRef.value) {
+    live2dRef.value.resetPosition()
+  }
+}
+
+function zoomInLive2D() {
+  if (live2dRef.value) live2dRef.value.adjustScale(0.1)
+}
+
+function zoomOutLive2D() {
+  if (live2dRef.value) live2dRef.value.adjustScale(-0.1)
+}
 
 const inputMessage = ref('')
 const messages = ref([])
@@ -459,9 +498,9 @@ textarea:focus {
 ═══════════════════════════════ */
 .live2d-sidebar {
   width: 360px;
-  background: rgba(8, 8, 20, 0.70);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(102, 126, 234, 0.12);
+  background: rgba(6, 6, 18, 0.65);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(102, 126, 234, 0.10);
   border-left: none;
   border-radius: 0 16px 16px 0;
   display: flex;
@@ -471,13 +510,13 @@ textarea:focus {
   transition: border-color 0.35s ease;
 }
 .live2d-sidebar:hover {
-  border-color: rgba(102, 126, 234, 0.20);
+  border-color: rgba(102, 126, 234, 0.18);
 }
 
 .live2d-header {
   padding: 14px 18px;
-  background: rgba(15, 20, 50, 0.80);
-  border-bottom: 1px solid rgba(102, 126, 234, 0.12);
+  background: rgba(12, 16, 40, 0.70);
+  border-bottom: 1px solid rgba(102, 126, 234, 0.10);
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.3px;
@@ -485,12 +524,56 @@ textarea:focus {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.live2d-header-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.btn-header-action {
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgba(102, 126, 234, 0.20);
+  border-radius: 50%;
+  background: rgba(15, 20, 50, 0.70);
+  color: #a0a0ff;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s ease;
+  padding: 0;
+  line-height: 1;
+}
+
+.btn-header-action:hover {
+  background: rgba(102, 126, 234, 0.15);
+  border-color: rgba(102, 126, 234, 0.50);
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(102, 126, 234, 0.18);
+}
+
+.btn-header-action:active {
+  transform: scale(0.92);
+}
+
+.btn-header-action.active {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 2px 10px rgba(102, 126, 234, 0.35);
 }
 
 .live2d-container {
   flex: 1;
   min-height: 400px;
-  background: radial-gradient(ellipse at center, rgba(102, 126, 234, 0.05) 0%, #07070d 70%);
+  background: radial-gradient(ellipse at center, rgba(102, 126, 234, 0.04) 0%, rgba(4, 4, 14, 0.50) 70%);
   position: relative;
   overflow: hidden;
 }
