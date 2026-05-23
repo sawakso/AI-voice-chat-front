@@ -422,80 +422,124 @@ watch(settings, (newVal) => {
 </script>
 
 <style scoped>
+/* ═══════════════════════════════
+   页面容器
+═══════════════════════════════ */
 .live2d-settings {
-  max-width: 750px;
+  max-width: 760px;
   margin: 0 auto;
-  padding: 20px 0;
+  padding: 4px 0 32px;
 }
 
 h2 {
-  margin-bottom: 4px;
+  margin-bottom: 6px;
+  font-size: 22px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #667eea, #a0a0ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 h3 {
-  margin: 0 0 16px 0;
-  font-size: 16px;
-  color: #e94560;
+  margin: 0 0 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #a0a0ff;
+  letter-spacing: 0.3px;
 }
 
 .hint {
-  color: #888;
+  color: #64748b;
   font-size: 13px;
-  margin-bottom: 24px;
+  margin-bottom: 28px;
 }
 
 .hint-sm {
   font-size: 11px;
-  color: #666;
-  margin-top: 4px;
+  color: #475569;
+  margin-top: 5px;
+  line-height: 1.5;
 }
 
+/* ═══════════════════════════════
+   模型信息提示
+═══════════════════════════════ */
 .model-info {
-  margin-top: 8px;
-  padding: 8px 12px;
-  background: rgba(233, 69, 96, 0.1);
-  border-left: 3px solid #e94560;
-  border-radius: 4px;
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: rgba(102, 126, 234, 0.06);
+  border-left: 3px solid rgba(102, 126, 234, 0.50);
+  border-radius: 0 6px 6px 0;
 }
 
 .model-description {
   font-size: 12px;
-  color: #aaa;
+  color: #94a3b8;
 }
 
+/* ═══════════════════════════════
+   设置分区卡片
+═══════════════════════════════ */
 .settings-section {
-  background: #0a0f1a;
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 20px;
+  background: rgba(5, 8, 20, 0.60);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(102, 126, 234, 0.12);
+  border-radius: 14px;
+  padding: 22px 22px;
+  margin-bottom: 16px;
+  transition: all 0.3s ease;
+}
+.settings-section:hover {
+  border-color: rgba(102, 126, 234, 0.25);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
+/* ═══════════════════════════════
+   表单组
+═══════════════════════════════ */
 .form-group {
-  margin-bottom: 16px;
+  margin-bottom: 18px;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
 }
 
 .form-group label {
   display: block;
   margin-bottom: 8px;
-  font-size: 14px;
-  color: #ccc;
+  font-size: 13px;
+  font-weight: 500;
+  color: #94a3b8;
 }
 
 .form-group input[type="text"],
 .form-group select {
   width: 100%;
   padding: 10px 14px;
-  border: 1px solid #0f3460;
-  border-radius: 8px;
-  background: #16213e;
-  color: #eee;
+  border: 1px solid rgba(102, 126, 234, 0.20);
+  border-radius: 10px;
+  background: rgba(15, 20, 50, 0.70);
+  color: #e2e8f0;
   font-size: 14px;
   outline: none;
+  transition: all 0.25s;
+  font-family: inherit;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .form-group input:focus,
 .form-group select:focus {
-  border-color: #e94560;
+  border-color: rgba(102, 126, 234, 0.60);
+  background: rgba(15, 20, 50, 0.90);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.10);
+}
+
+.form-group select option {
+  background: #0f1428;
+  color: #e2e8f0;
 }
 
 .form-row {
@@ -507,12 +551,23 @@ h3 {
   flex: 1;
 }
 
+/* 禁用状态 */
+select:disabled,
+input:disabled {
+  opacity: 0.40;
+  cursor: not-allowed;
+}
+
+/* ═══════════════════════════════
+   Slider 滑块 + 值显示
+═══════════════════════════════ */
 input[type="range"] {
-  width: calc(100% - 50px);
+  width: calc(100% - 60px);
   padding: 0;
   height: 4px;
   -webkit-appearance: none;
-  background: #0f3460;
+  appearance: none;
+  background: rgba(102, 126, 234, 0.20);
   border-radius: 2px;
   vertical-align: middle;
 }
@@ -526,19 +581,29 @@ input[type="range"]::-webkit-slider-thumb {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: #e94560;
+  background: linear-gradient(135deg, #667eea, #764ba2);
   cursor: pointer;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.40);
+  transition: transform 0.2s;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
 }
 
 .value-display {
   display: inline-block;
   margin-left: 12px;
-  width: 45px;
-  color: #e94560;
+  width: 48px;
+  color: #a0a0ff;
   font-size: 13px;
+  font-weight: 500;
+  vertical-align: middle;
 }
 
-/* 开关样式 */
+/* ═══════════════════════════════
+   Toggle 开关
+═══════════════════════════════ */
 .switch-label {
   display: flex;
   justify-content: space-between;
@@ -548,13 +613,15 @@ input[type="range"]::-webkit-slider-thumb {
 
 .switch-text {
   font-size: 14px;
-  color: #eee;
+  color: #e2e8f0;
+  font-weight: 500;
 }
 
 .switch {
   position: relative;
-  width: 50px;
-  height: 24px;
+  width: 52px;
+  height: 26px;
+  flex-shrink: 0;
 }
 
 .switch input {
@@ -566,13 +633,11 @@ input[type="range"]::-webkit-slider-thumb {
 .slider {
   position: absolute;
   cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #0f3460;
-  border-radius: 24px;
-  transition: 0.3s;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(102, 126, 234, 0.12);
+  border: 1px solid rgba(102, 126, 234, 0.20);
+  border-radius: 26px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .slider:before {
@@ -582,27 +647,35 @@ input[type="range"]::-webkit-slider-thumb {
   width: 18px;
   left: 3px;
   bottom: 3px;
-  background-color: white;
+  background: #94a3b8;
   border-radius: 50%;
-  transition: 0.3s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
 input:checked + .slider {
-  background-color: #e94560;
+  background: rgba(102, 126, 234, 0.30);
+  border-color: rgba(102, 126, 234, 0.60);
+  box-shadow: 0 0 12px rgba(102, 126, 234, 0.20);
 }
 
 input:checked + .slider:before {
   transform: translateX(26px);
+  background: linear-gradient(135deg, #667eea, #a0a0ff);
 }
 
-/* 预览区域 */
+/* ═══════════════════════════════
+   预览区域
+═══════════════════════════════ */
 .preview-section {
-  background: linear-gradient(135deg, #0a0f1a 0%, #0a0a1a 100%);
+  background: linear-gradient(135deg, rgba(5, 8, 20, 0.80) 0%, rgba(8, 5, 25, 0.80) 100%);
+  transition: border-color 0.35s ease, box-shadow 0.35s ease;
 }
 
 .preview-container {
-  min-height: 250px;
-  background: #16213e;
+  min-height: 260px;
+  background: radial-gradient(ellipse at center, rgba(102, 126, 234, 0.06) 0%, rgba(5, 5, 15, 0.80) 70%);
+  border: 1px solid rgba(102, 126, 234, 0.12);
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -611,9 +684,10 @@ input:checked + .slider:before {
 }
 
 .preview-placeholder {
-  color: #666;
+  color: #475569;
   text-align: center;
   padding: 40px;
+  font-size: 14px;
 }
 
 .preview-live2d {
@@ -622,48 +696,82 @@ input:checked + .slider:before {
 }
 
 .live2d-preview {
-  width: 200px;
-  height: 200px;
+  width: 220px;
+  height: 220px;
   margin: 0 auto;
-  background: rgba(233, 69, 96, 0.1);
-  border-radius: 12px;
+  background: rgba(102, 126, 234, 0.06);
+  border: 1px solid rgba(102, 126, 234, 0.15);
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
+  overflow: hidden;
 }
 
 .live2d-preview::before {
   content: "🎨";
   font-size: 48px;
-  opacity: 0.3;
+  opacity: 0.20;
 }
 
+/* ═══════════════════════════════
+   预览控制按钮
+═══════════════════════════════ */
 .preview-controls {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   justify-content: center;
   margin-top: 16px;
   flex-wrap: wrap;
+  padding: 0 12px 12px;
 }
 
 .preview-controls button {
-  padding: 6px 12px;
-  background: #0f3460;
-  border: none;
+  padding: 8px 16px;
+  background: rgba(102, 126, 234, 0.08);
+  border: 1px solid rgba(102, 126, 234, 0.18);
   border-radius: 20px;
-  color: #eee;
+  color: #a0a0ff;
   font-size: 12px;
+  font-family: inherit;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.25s ease;
 }
-
 .preview-controls button:hover {
-  background: #e94560;
-  transform: scale(1.02);
+  background: rgba(102, 126, 234, 0.20);
+  border-color: rgba(102, 126, 234, 0.50);
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(102, 126, 234, 0.20);
+}
+.preview-controls button:active {
+  transform: translateY(0) scale(0.95);
 }
 
-/* 按钮 */
+/* 调试按钮特殊样式 */
+.preview-controls button[style*="ff6b6b"],
+.preview-controls button:last-child {
+  background: rgba(239, 68, 68, 0.10) !important;
+  border-color: rgba(239, 68, 68, 0.25) !important;
+  color: #f87171 !important;
+}
+
+.preview-controls button:last-child:hover {
+  background: rgba(239, 68, 68, 0.20) !important;
+  border-color: rgba(239, 68, 68, 0.50) !important;
+  color: #fff !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.18) !important;
+}
+.preview-controls button:last-child:active {
+  transform: translateY(0) scale(0.95) !important;
+}
+
+/* ═══════════════════════════════
+   重置按钮
+═══════════════════════════════ */
 .btn-row {
   display: flex;
   gap: 12px;
@@ -673,40 +781,52 @@ input:checked + .slider:before {
 .btn-reset {
   flex: 1;
   padding: 12px;
-  background: #0f3460;
-  border: none;
-  border-radius: 8px;
-  color: #fff;
+  background: rgba(102, 126, 234, 0.06);
+  border: 1px solid rgba(102, 126, 234, 0.18);
+  border-radius: 20px;
+  color: #94a3b8;
   font-size: 14px;
+  font-family: inherit;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.25s ease;
 }
-
 .btn-reset:hover {
-  background: #e94560;
+  background: rgba(102, 126, 234, 0.14);
+  border-color: rgba(102, 126, 234, 0.45);
+  color: #e2e8f0;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(102, 126, 234, 0.15);
+}
+.btn-reset:active {
+  transform: translateY(0) scale(0.97);
 }
 
+/* ═══════════════════════════════
+   消息提示
+═══════════════════════════════ */
 .msg {
   margin-top: 16px;
-  padding: 10px;
-  border-radius: 8px;
-  font-size: 14px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  animation: msgSlideIn 0.3s ease;
+}
+
+@keyframes msgSlideIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .msg.success {
-  background: #16213e;
-  color: #4CAF50;
+  background: rgba(74, 222, 128, 0.08);
+  border: 1px solid rgba(74, 222, 128, 0.25);
+  color: #4ade80;
 }
 
 .msg.error {
-  background: #16213e;
-  color: #e94560;
-}
-
-/* 禁用状态 */
-select:disabled,
-input:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #f87171;
 }
 </style>

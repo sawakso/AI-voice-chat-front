@@ -181,39 +181,71 @@ watch(messages, (newMessages) => {
 </script>
 
 <style scoped>
-/* 主布局容器 - 使用flex横向排列聊天区和Live2D区 */
+/* ═══════════════════════════════
+   主布局容器 - flex 横向排列
+═══════════════════════════════ */
 .chat-layout {
   display: flex;
-  height: calc(100vh - 56px - 40px);
+  height: calc(100vh - 60px - 48px);
   width: 100%;
+  gap: 0;
 }
 
-/* 聊天区域 */
+/* ═══════════════════════════════
+   聊天区域
+═══════════════════════════════ */
 .chat-container {
-  flex: 1;  /* 占据剩余空间 */
+  flex: 1;
   display: flex;
   flex-direction: column;
-  background: #1a1a2e;
-  min-width: 0;  /* 防止内容溢出 */
+  background: rgba(10, 10, 22, 0.60);
+  backdrop-filter: blur(12px);
+  border-radius: 16px 0 0 16px;
+  border: 1px solid rgba(102, 126, 234, 0.12);
+  border-right: none;
+  min-width: 0;
+  overflow: hidden;
+  transition: border-color 0.35s ease;
+}
+.chat-container:hover {
+  border-color: rgba(102, 126, 234, 0.20);
 }
 
+/* ═══════════════════════════════
+   消息列表
+═══════════════════════════════ */
 .message-list {
   flex: 1;
   overflow-y: auto;
-  padding: 20px;
+  padding: 24px 20px;
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.message {
-  display: flex;
-  animation: fadeIn 0.3s ease;
+/* 滚动条 */
+.message-list::-webkit-scrollbar {
+  width: 4px;
+}
+.message-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+.message-list::-webkit-scrollbar-thumb {
+  background: rgba(102, 126, 234, 0.3);
+  border-radius: 2px;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+/* ═══════════════════════════════
+   消息气泡
+═══════════════════════════════ */
+.message {
+  display: flex;
+  animation: msgFadeIn 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes msgFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .message.user {
@@ -226,86 +258,114 @@ watch(messages, (newMessages) => {
 
 .message-content {
   max-width: 70%;
-  padding: 12px 16px;
-  border-radius: 18px;
-  background: #16213e;
-  color: #eee;
+  padding: 12px 18px;
+  border-radius: 20px;
+  font-size: 14px;
+  line-height: 1.6;
+  position: relative;
+  transition: all 0.2s;
 }
 
+/* 用户消息 - 紫蓝渐变 */
 .message.user .message-content {
-  background: #e94560;
-  border-bottom-right-radius: 4px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff;
+  border-bottom-right-radius: 6px;
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.30);
 }
 
+/* AI 消息 - 深色磨砂玻璃 */
 .message.assistant .message-content {
-  background: #0f3460;
-  border-bottom-left-radius: 4px;
+  background: rgba(15, 20, 50, 0.85);
+  backdrop-filter: blur(8px);
+  color: #e2e8f0;
+  border: 1px solid rgba(102, 126, 234, 0.18);
+  border-bottom-left-radius: 6px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
 }
 
 .message-text {
-  line-height: 1.5;
+  line-height: 1.6;
   white-space: pre-wrap;
   word-break: break-word;
 }
 
+/* ═══════════════════════════════
+   消息底部 (时间 + 播放按钮)
+═══════════════════════════════ */
 .message-footer {
   margin-top: 8px;
   display: flex;
-  gap: 12px;
+  gap: 8px;
   align-items: center;
   justify-content: flex-end;
 }
 
 .message-time {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.40);
 }
 
 .btn-play {
-  padding: 4px 10px;
+  padding: 5px 14px;
   font-size: 12px;
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
+  background: rgba(102, 126, 234, 0.12);
+  border: 1px solid rgba(102, 126, 234, 0.22);
   border-radius: 20px;
-  color: #fff;
+  color: #a0a0ff;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.25s ease;
+  font-family: inherit;
+  font-weight: 500;
 }
-
 .btn-play:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(102, 126, 234, 0.22);
+  border-color: rgba(102, 126, 234, 0.50);
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(102, 126, 234, 0.22);
+}
+.btn-play:active {
+  transform: scale(0.96);
 }
 
+/* ═══════════════════════════════
+   正在输入指示器
+═══════════════════════════════ */
 .message.loading .message-content {
   padding: 16px 20px;
 }
 
 .typing-indicator {
   display: flex;
-  gap: 4px;
+  gap: 5px;
+  align-items: center;
 }
 
 .typing-indicator span {
-  width: 8px;
-  height: 8px;
-  background: #888;
+  width: 7px;
+  height: 7px;
+  background: rgba(102, 126, 234, 0.70);
   border-radius: 50%;
-  animation: typing 1.4s infinite ease-in-out;
+  animation: typingBounce 1.4s infinite ease-in-out;
 }
 
 .typing-indicator span:nth-child(1) { animation-delay: 0s; }
 .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
 .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
 
-@keyframes typing {
+@keyframes typingBounce {
   0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
-  30% { transform: translateY(-10px); opacity: 1; }
+  30%           { transform: translateY(-8px); opacity: 1; }
 }
 
+/* ═══════════════════════════════
+   输入区域
+═══════════════════════════════ */
 .input-area {
   padding: 16px 20px;
-  background: #16213e;
-  border-top: 1px solid #0f3460;
+  background: rgba(8, 10, 25, 0.80);
+  border-top: 1px solid rgba(102, 126, 234, 0.12);
 }
 
 .input-row {
@@ -316,75 +376,122 @@ watch(messages, (newMessages) => {
 
 textarea {
   flex: 1;
-  padding: 12px 16px;
-  border: 1px solid #0f3460;
+  padding: 12px 18px;
+  border: 1px solid rgba(102, 126, 234, 0.20);
   border-radius: 24px;
-  background: #0f3460;
-  color: #eee;
+  background: rgba(15, 20, 50, 0.70);
+  color: #e2e8f0;
   font-size: 14px;
   resize: none;
   font-family: inherit;
   outline: none;
-  transition: all 0.2s;
+  transition: all 0.25s;
+  line-height: 1.5;
+}
+
+textarea::placeholder {
+  color: #4a5568;
 }
 
 textarea:focus {
-  border-color: #e94560;
+  border-color: rgba(102, 126, 234, 0.60);
+  background: rgba(15, 20, 50, 0.90);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.10);
 }
 
+/* 发送按钮 */
 .btn-send {
   padding: 12px 24px;
-  background: #e94560;
+  background: linear-gradient(135deg, #667eea, #764ba2);
   border: none;
   border-radius: 24px;
   color: #fff;
   font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.25s;
+  letter-spacing: 0.3px;
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.30);
+  white-space: nowrap;
+  font-family: inherit;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-send::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+  transition: left 0.4s ease;
+}
+
+.btn-send:hover:not(:disabled)::before {
+  left: 100%;
 }
 
 .btn-send:hover:not(:disabled) {
-  background: #ff6b8a;
-  transform: scale(1.02);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.45);
+}
+
+.btn-send:active:not(:disabled) {
+  transform: translateY(0) scale(0.97);
 }
 
 .btn-send:disabled {
-  opacity: 0.5;
+  opacity: 0.45;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 .input-hint {
   margin-top: 8px;
-  font-size: 12px;
-  color: #888;
+  font-size: 11px;
+  color: #4a5568;
   display: flex;
   justify-content: space-between;
 }
 
-/* 右侧 Live2D 区域 */
+/* ═══════════════════════════════
+   右侧 Live2D 区域
+═══════════════════════════════ */
 .live2d-sidebar {
-  width: 350px;  /* 增加宽度以更好显示模型 */
-  background: #0f1219;
-  border-left: 1px solid #0f3460;
+  width: 360px;
+  background: rgba(8, 8, 20, 0.70);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(102, 126, 234, 0.12);
+  border-left: none;
+  border-radius: 0 16px 16px 0;
   display: flex;
   flex-direction: column;
-  flex-shrink: 0;  /* 防止被压缩 */
+  flex-shrink: 0;
+  overflow: hidden;
+  transition: border-color 0.35s ease;
+}
+.live2d-sidebar:hover {
+  border-color: rgba(102, 126, 234, 0.20);
 }
 
 .live2d-header {
-  padding: 12px 16px;
-  background: #16213e;
-  border-bottom: 1px solid #0f3460;
-  font-size: 14px;
-  font-weight: bold;
-  color: #e94560;
+  padding: 14px 18px;
+  background: rgba(15, 20, 50, 0.80);
+  border-bottom: 1px solid rgba(102, 126, 234, 0.12);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  background: linear-gradient(135deg, #667eea, #a0a0ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .live2d-container {
-  flex: 1;  /* 占据剩余高度 */
-  min-height: 400px;  /* 最小高度 */
-  background: #1a1a2e;
+  flex: 1;
+  min-height: 400px;
+  background: radial-gradient(ellipse at center, rgba(102, 126, 234, 0.05) 0%, #07070d 70%);
   position: relative;
-  overflow: hidden;  /* 隐藏溢出内容 */
+  overflow: hidden;
 }
 </style>
